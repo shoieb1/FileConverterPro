@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversion Result – FileConverter Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <div class="logo-icon"><i class="fas fa-bolt"></i></div>
+                <span class="logo-text">FileConverter<span class="logo-pro">Pro</span></span>
+            </a>
+            <button class="nav-toggle" id="navToggle"><span></span><span></span><span></span></button>
+            <div class="nav-menu" id="navMenu">
+                <div class="nav-dropdown">
+                    <button class="nav-link dropdown-btn"><i class="fas fa-file-pdf"></i> PDF <i
+                            class="fas fa-chevron-down fa-xs"></i></button>
+                    <div class="dropdown-content">
+                        <th:block th:each="t : ${toolsByCategory['PDF']}">
+                            <a th:href="@{'/tool/' + ${t.id}}" class="dropdown-item"><span th:text="${t.icon}"></span>
+                                <span th:text="${t.name}"></span></a>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="nav-dropdown">
+                    <button class="nav-link dropdown-btn"><i class="fas fa-image"></i> Image <i
+                            class="fas fa-chevron-down fa-xs"></i></button>
+                    <div class="dropdown-content">
+                        <th:block th:each="t : ${toolsByCategory['Image']}">
+                            <a th:href="@{'/tool/' + ${t.id}}" class="dropdown-item"><span th:text="${t.icon}"></span>
+                                <span th:text="${t.name}"></span></a>
+                        </th:block>
+                    </div>
+                </div>
+                <a href="/stats" class="nav-link"><i class="fas fa-chart-pie"></i> Stats</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- SUCCESS RESULT -->
+    <section class="result-section" th:if="${result.success}">
+        <div class="container-sm">
+            <!-- Confetti canvas -->
+            <canvas id="confettiCanvas"></canvas>
+
+            <div class="result-card success">
+                <div class="result-icon-wrapper">
+                    <div class="result-icon success-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="result-sparkles">
+                        <span class="sparkle s1">✨</span>
+                        <span class="sparkle s2">⭐</span>
+                        <span class="sparkle s3">✨</span>
+                    </div>
+                </div>
+
+                <h2 class="result-title">Conversion Complete!</h2>
+                <p class="result-message" th:text="${result.message}">File converted</p>
+
+                <div class="result-meta">
+                    <div class="meta-item">
+                        <i class="fas fa-file"></i>
+                        <div>
+                            <span class="meta-label">File Name</span>
+                            <span class="meta-value" th:text="${result.fileName}">file.pdf</span>
+                        </div>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-weight-hanging"></i>
+                        <div>
+                            <span class="meta-label">File Size</span>
+                            <span class="meta-value" th:text="${result.fileSizeFormatted}">1.2 MB</span>
+                        </div>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <span class="meta-label">Processing Time</span>
+                            <span class="meta-value" th:text="${result.processingTimeMs + ' ms'}">500 ms</span>
+                        </div>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-exchange-alt"></i>
+                        <div>
+                            <span class="meta-label">Conversion Type</span>
+                            <span class="meta-value" th:text="${result.conversionType}">PDF → Word</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DOWNLOAD BUTTON -->
+                <a th:href="${result.downloadUrl}" class="btn-download" id="downloadBtn" th:attr="data-tool=${toolId}">
+                    <i class="fas fa-download"></i>
+                    <span>Download Converted File</span>
+                    <div class="btn-ripple"></div>
+                </a>
+
+                <div class="result-actions">
+                    <a th:href="@{'/tool/' + ${toolId}}" class="btn-secondary">
+                        <i class="fas fa-redo"></i> Convert Another
+                    </a>
+                    <a href="/" class="btn-secondary">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                </div>
+            </div>
+
+            <!-- Toast Notification -->
+            <div class="toast show" id="successToast">
+                <div class="toast-icon success"><i class="fas fa-check"></i></div>
+                <div class="toast-content">
+                    <strong>Success!</strong>
+                    <span th:text="${result.conversionType} + ' completed!'">Conversion done!</span>
+                </div>
+                <button class="toast-close" onclick="this.parentElement.remove()"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAILURE RESULT -->
+    <section class="result-section" th:if="${!result.success}">
+        <div class="container-sm">
+            <div class="result-card error">
+                <div class="result-icon-wrapper">
+                    <div class="result-icon error-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                </div>
+                <h2 class="result-title">Conversion Failed</h2>
+                <p class="result-message" th:text="${result.message}">An error occurred.</p>
+
+                <div class="error-tips">
+                    <h4><i class="fas fa-lightbulb"></i> Possible Solutions:</h4>
+                    <ul>
+                        <li>Make sure the file format is correct and not corrupted</li>
+                        <li>Check that the file size is under 500 MB</li>
+                        <li>For media conversion, ensure FFmpeg is installed</li>
+                        <li>Try again with a different file</li>
+                    </ul>
+                </div>
+
+                <div class="result-actions" style="justify-content:center; margin-top:2rem;">
+                    <a th:href="@{'/tool/' + ${toolId}}" class="btn-convert"
+                        style="text-decoration:none; display:inline-flex;">
+                        <i class="fas fa-redo"></i> Try Again
+                    </a>
+                    <a href="/" class="btn-secondary">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RELATED TOOLS -->
+    <section class="section bg-alt" th:if="${tool != null}">
+        <div class="container">
+            <h3 class="related-title"><i class="fas fa-tools"></i> Try Another Tool</h3>
+            <div class="related-grid">
+                <th:block th:each="t : ${allTools}" th:if="${t.category == tool.category and t.id != tool.id}">
+                    <a th:href="@{'/tool/' + ${t.id}}" class="related-card">
+                        <span th:text="${t.icon}"></span>
+                        <span th:text="${t.name}">Name</span>
+                    </a>
+                </th:block>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2025 FileConverter Pro · Built with ❤️ using Java 21 & Spring Boot</p>
+            </div>
+        </div>
+    </footer>
+
+    <script th:src="@{/js/main.js}"></script>
+    <script th:inline="javascript">
+        // Confetti on success
+        const isSuccess = /*[[${result.success}]]*/ false;
+        const toolId = /*[[${toolId}]]*/ '';
+        if (isSuccess) {
+            startConfetti();
+            // Auto-dismiss toast
+            setTimeout(() => {
+                const toast = document.getElementById('successToast');
+                if (toast) toast.classList.remove('show');
+            }, 5000);
+            // Track download click → download file via fetch+Blob, then redirect to thank you
+            document.getElementById('downloadBtn')?.addEventListener('click', function (e) {
+                e.preventDefault();
+                const downloadUrl = this.getAttribute('href');
+                const toolName = this.getAttribute('data-tool') || 'conversion';
+                const btn = this;
+
+                // Disable button to prevent double-clicks
+                btn.style.pointerEvents = 'none';
+                btn.style.opacity = '0.7';
+
+                // Use fetch + Blob to trigger a real file download
+                fetch(downloadUrl)
+                    .then(response => {
+                        if (!response.ok) throw new Error('Download failed');
+                        // Extract filename from Content-Disposition header or URL
+                        const disposition = response.headers.get('Content-Disposition');
+                        let filename = downloadUrl.split('/').pop() || 'converted_file';
+                        if (disposition) {
+                            const match = disposition.match(/filename\*?=['"]?(?:UTF-8'')?([^;'"]+)/i);
+                            if (match) filename = decodeURIComponent(match[1]);
+                        }
+                        return response.blob().then(blob => ({ blob, filename }));
+                    })
+                    .then(({ blob, filename }) => {
+                        // Create a temporary download link and click it
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = filename;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+
+                        // Redirect to thank you page after download starts
+                        setTimeout(() => {
+                            window.location.href = '/thankyou?tool=' + encodeURIComponent(toolName);
+                        }, 1500);
+                    })
+                    .catch(err => {
+                        console.error('Download error:', err);
+                        // Fallback: navigate directly to the download URL
+                        window.location.href = downloadUrl;
+                        setTimeout(() => {
+                            window.location.href = '/thankyou?tool=' + encodeURIComponent(toolName);
+                        }, 3000);
+                    });
+            });
+        }
+    </script>
+</body>
+
+</html>

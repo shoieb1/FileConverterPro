@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You – FileConverter Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="thankyou-page">
+
+<nav class="navbar" id="navbar">
+    <div class="nav-container">
+        <a href="/" class="nav-logo">
+            <div class="logo-icon"><i class="fas fa-bolt"></i></div>
+            <span class="logo-text">FileConverter<span class="logo-pro">Pro</span></span>
+        </a>
+        <div class="nav-menu">
+            <a href="/" class="nav-link"><i class="fas fa-home"></i> Home</a>
+            <a href="/stats" class="nav-link"><i class="fas fa-chart-pie"></i> Stats</a>
+        </div>
+    </div>
+</nav>
+
+<section class="thankyou-section">
+    <canvas id="confettiCanvas"></canvas>
+
+    <div class="thankyou-card">
+        <!-- Animated success ring -->
+        <div class="ty-icon-wrapper">
+            <div class="ty-ring ty-ring-1"></div>
+            <div class="ty-ring ty-ring-2"></div>
+            <div class="ty-ring ty-ring-3"></div>
+            <div class="ty-icon">🎉</div>
+        </div>
+
+        <h1 class="ty-title">Thank You!</h1>
+        <p class="ty-subtitle">
+            Your <strong th:text="${toolName != null ? toolName : 'file'}">file</strong> has been converted and downloaded successfully.
+        </p>
+
+        <!-- REVIEW STARS -->
+        <div class="review-section">
+            <h3><i class="fas fa-star"></i> How was your experience?</h3>
+            <div class="star-rating" id="starRating">
+                <button class="star" data-val="1" title="Poor">⭐</button>
+                <button class="star" data-val="2" title="Fair">⭐</button>
+                <button class="star" data-val="3" title="Good">⭐</button>
+                <button class="star" data-val="4" title="Great">⭐</button>
+                <button class="star" data-val="5" title="Excellent">⭐</button>
+            </div>
+            <div class="review-input-wrapper" id="reviewInput" style="display:none">
+                <textarea placeholder="Tell us what you think (optional)..." rows="3" id="reviewText" class="review-textarea"></textarea>
+                <button class="btn-submit-review" id="submitReview">
+                    <i class="fas fa-paper-plane"></i> Submit Review
+                </button>
+            </div>
+            <div class="review-thanks" id="reviewThanks" style="display:none">
+                <i class="fas fa-heart" style="color:#e74c3c"></i> Thanks for your feedback!
+            </div>
+        </div>
+
+        <!-- REDIRECT COUNTER -->
+        <div class="redirect-counter">
+            <div class="redirect-ring">
+                <svg viewBox="0 0 80 80" class="counter-svg">
+                    <circle class="counter-bg" cx="40" cy="40" r="34" />
+                    <circle class="counter-fill" cx="40" cy="40" r="34" id="counterCircle" />
+                </svg>
+                <span class="counter-num" id="counterNum">10</span>
+            </div>
+            <p>Redirecting to home in <strong id="countdownSec">10</strong> seconds</p>
+            <a href="/" class="btn-go-home">
+                <i class="fas fa-home"></i> Go Home Now
+            </a>
+        </div>
+
+        <!-- Quick tool links -->
+        <div class="ty-more-tools">
+            <h4>Try Another Conversion</h4>
+            <div class="ty-tools-grid">
+                <a href="/tool/pdf-to-word" class="ty-tool-link"><span>📄</span> PDF → Word</a>
+                <a href="/tool/jpg-to-png" class="ty-tool-link"><span>🎨</span> JPG → PNG</a>
+                <a href="/tool/csv-to-excel" class="ty-tool-link"><span>📊</span> CSV → Excel</a>
+                <a href="/tool/image-resize" class="ty-tool-link"><span>↔️</span> Resize Image</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script th:src="@{/js/main.js}"></script>
+<script>
+    startConfetti();
+    initThankyouPage();
+</script>
+</body>
+</html>

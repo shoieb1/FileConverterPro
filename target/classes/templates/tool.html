@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${tool.name} + ' – FileConverter Pro'">Tool – FileConverter Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<!-- NAV (reused) -->
+<nav class="navbar" id="navbar">
+    <div class="nav-container">
+        <a href="/" class="nav-logo">
+            <div class="logo-icon"><i class="fas fa-bolt"></i></div>
+            <span class="logo-text">FileConverter<span class="logo-pro">Pro</span></span>
+        </a>
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+            <span></span><span></span><span></span>
+        </button>
+        <div class="nav-menu" id="navMenu">
+            <div class="nav-dropdown">
+                <button class="nav-link dropdown-btn"><i class="fas fa-file-pdf"></i> PDF <i class="fas fa-chevron-down fa-xs"></i></button>
+                <div class="dropdown-content">
+                    <th:block th:each="t : ${toolsByCategory['PDF']}">
+                        <a th:href="@{'/tool/' + ${t.id}}" class="dropdown-item" th:classappend="${t.id == tool.id} ? 'active' : ''">
+                            <span th:text="${t.icon}"></span> <span th:text="${t.name}"></span>
+                        </a>
+                    </th:block>
+                </div>
+            </div>
+            <div class="nav-dropdown">
+                <button class="nav-link dropdown-btn"><i class="fas fa-image"></i> Image <i class="fas fa-chevron-down fa-xs"></i></button>
+                <div class="dropdown-content">
+                    <th:block th:each="t : ${toolsByCategory['Image']}">
+                        <a th:href="@{'/tool/' + ${t.id}}" class="dropdown-item" th:classappend="${t.id == tool.id} ? 'active' : ''">
+                            <span th:text="${t.icon}"></span> <span th:text="${t.name}"></span>
+                        </a>
+                    </th:block>
+                </div>
+            </div>
+            <div class="nav-dropdown">
+                <button class="nav-link dropdown-btn"><i class="fas fa-table"></i> Spreadsheet <i class="fas fa-chevron-down fa-xs"></i></button>
+                <div class="dropdown-content">
+                    <th:block th:each="t : ${toolsByCategory['Spreadsheet']}">
+                        <a th:href="@{'/tool/' + ${t.id}}" class="dropdown-item">
+                            <span th:text="${t.icon}"></span> <span th:text="${t.name}"></span>
+                        </a>
+                    </th:block>
+                </div>
+            </div>
+            <div class="nav-dropdown">
+                <button class="nav-link dropdown-btn"><i class="fas fa-file-alt"></i> Documents <i class="fas fa-chevron-down fa-xs"></i></button>
+                <div class="dropdown-content">
+                    <th:block th:each="t : ${toolsByCategory['Document']}">
+                        <a th:href="@{'/tool/' + ${t.id}}" class="dropdown-item">
+                            <span th:text="${t.icon}"></span> <span th:text="${t.name}"></span>
+                        </a>
+                    </th:block>
+                </div>
+            </div>
+            <div class="nav-dropdown">
+                <button class="nav-link dropdown-btn"><i class="fas fa-music"></i> Media <i class="fas fa-chevron-down fa-xs"></i></button>
+                <div class="dropdown-content">
+                    <th:block th:each="t : ${toolsByCategory['Media']}">
+                        <a th:href="@{'/tool/' + ${t.id}}" class="dropdown-item">
+                            <span th:text="${t.icon}"></span> <span th:text="${t.name}"></span>
+                        </a>
+                    </th:block>
+                </div>
+            </div>
+            <a href="/stats" class="nav-link"><i class="fas fa-chart-pie"></i> Stats</a>
+        </div>
+    </div>
+</nav>
+
+<!-- TOOL HERO -->
+<section class="tool-hero" th:style="'--tool-color:' + ${tool.color}">
+    <div class="tool-hero-content">
+        <nav class="breadcrumb">
+            <a href="/"><i class="fas fa-home"></i> Home</a>
+            <i class="fas fa-chevron-right"></i>
+            <span th:text="${tool.category}">Category</span>
+            <i class="fas fa-chevron-right"></i>
+            <span th:text="${tool.name}">Tool</span>
+        </nav>
+        <div class="tool-hero-icon" th:style="'background:' + ${tool.color} + '30'">
+            <span th:text="${tool.icon}"></span>
+        </div>
+        <h1 th:text="${tool.name}">Tool Name</h1>
+        <p th:text="${tool.description}">Description</p>
+        <div class="conversion-badge">
+            <span class="badge-from" th:text="${tool.fromFormat}">FROM</span>
+            <div class="badge-arrow"><i class="fas fa-arrow-right"></i></div>
+            <span class="badge-to" th:text="${tool.toFormat}">TO</span>
+        </div>
+    </div>
+</section>
+
+<!-- UPLOAD AREA -->
+<section class="upload-section">
+    <div class="container-sm">
+        <form id="convertForm" th:action="@{'/convert/' + ${tool.id}}" method="post" enctype="multipart/form-data">
+
+            <!-- Multi-file notice -->
+            <div class="multi-notice" th:if="${tool.id == 'pdf-merge' or tool.id == 'images-to-pdf'}">
+                <i class="fas fa-info-circle"></i>
+                This tool accepts multiple files. Hold Ctrl/Cmd to select multiple files.
+            </div>
+
+            <!-- DROP ZONE -->
+            <div class="drop-zone" id="dropZone">
+                <div class="drop-zone-content">
+                    <div class="drop-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h3>Drop your file here</h3>
+                    <p>or <label for="fileInput" class="file-link">browse to upload</label></p>
+                    <p class="file-hint" th:text="'Supported: ' + ${tool.acceptedFormats}">Supported: .pdf</p>
+                    <p class="file-hint">Maximum file size: 500 MB</p>
+                </div>
+                <div class="drop-zone-preview" id="filePreview"></div>
+                <input type="file" id="fileInput"
+                       th:name="${(tool.id == 'pdf-merge' or tool.id == 'images-to-pdf') ? 'files' : 'file'}"
+                       th:accept="${tool.acceptedFormats}"
+                       th:multiple="${tool.id == 'pdf-merge' or tool.id == 'images-to-pdf'}"
+                       class="file-input" required>
+            </div>
+
+            <!-- EXTRA OPTIONS -->
+            <div class="extra-options" th:if="${tool.id == 'image-resize'}">
+                <h4><i class="fas fa-sliders-h"></i> Resize Options</h4>
+                <div class="options-grid">
+                    <div class="option-group">
+                        <label>Width (px)</label>
+                        <input type="number" name="width" value="800" min="1" max="10000" class="option-input">
+                    </div>
+                    <div class="option-group">
+                        <label>Height (px)</label>
+                        <input type="number" name="height" value="600" min="1" max="10000" class="option-input">
+                    </div>
+                </div>
+            </div>
+
+            <div class="extra-options" th:if="${tool.id == 'image-compress'}">
+                <h4><i class="fas fa-compress"></i> Compression Options</h4>
+                <div class="options-grid">
+                    <div class="option-group">
+                        <label>Quality: <span id="qualityVal">80</span>%</label>
+                        <input type="range" name="quality" min="10" max="100" value="80" class="range-input"
+                               oninput="document.getElementById('qualityVal').textContent = this.value">
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONVERT BUTTON -->
+            <button type="submit" class="btn-convert" id="convertBtn" th:style="'background: linear-gradient(135deg,' + ${tool.color} + ',' + ${tool.color} + 'cc)'">
+                <i class="fas fa-magic"></i>
+                <span>Convert Now</span>
+            </button>
+        </form>
+
+        <!-- LOADING OVERLAY -->
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="loading-content">
+                <div class="loading-animation">
+                    <div class="loader-ring"></div>
+                    <div class="loader-ring-inner"></div>
+                    <div class="loader-icon" th:text="${tool.icon}">📄</div>
+                </div>
+                <h3 class="loading-title">Converting your file...</h3>
+                <p class="loading-subtitle">Please wait while we process your file</p>
+                <div class="progress-bar-wrapper">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <div class="loading-steps">
+                    <div class="step active" id="step1"><i class="fas fa-upload"></i> Uploading</div>
+                    <div class="step" id="step2"><i class="fas fa-cog fa-spin"></i> Processing</div>
+                    <div class="step" id="step3"><i class="fas fa-check"></i> Finalizing</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- RELATED TOOLS -->
+<section class="section bg-alt">
+    <div class="container">
+        <h3 class="related-title"><i class="fas fa-tools"></i> Related Tools</h3>
+        <div class="related-grid">
+            <th:block th:each="t : ${allTools}" th:if="${t.category == tool.category and t.id != tool.id}">
+                <a th:href="@{'/tool/' + ${t.id}}" class="related-card">
+                    <span th:text="${t.icon}"></span>
+                    <span th:text="${t.name}">Name</span>
+                </a>
+            </th:block>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-bottom">
+            <p>© 2025 FileConverter Pro · Built with ❤️ using Java 21 & Spring Boot</p>
+            <a href="/" class="footer-stats-link"><i class="fas fa-home"></i> Back to Home</a>
+        </div>
+    </div>
+</footer>
+
+<script th:src="@{/js/main.js}"></script>
+<script>initToolPage();</script>
+</body>
+</html>

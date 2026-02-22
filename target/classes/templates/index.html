@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FileConverter Pro – Convert Any File Online</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+    <!-- NAV -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <div class="logo-icon"><i class="fas fa-bolt"></i></div>
+                <span class="logo-text">FileConverter<span class="logo-pro">Pro</span></span>
+            </a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="nav-menu" id="navMenu">
+                <div class="nav-dropdown">
+                    <button class="nav-link dropdown-btn"><i class="fas fa-file-pdf"></i> PDF Tools <i
+                            class="fas fa-chevron-down fa-xs"></i></button>
+                    <div class="dropdown-content">
+                        <th:block th:each="tool : ${toolsByCategory['PDF']}">
+                            <a th:href="@{'/tool/' + ${tool.id}}" class="dropdown-item">
+                                <span th:text="${tool.icon}"></span> <span th:text="${tool.name}"></span>
+                            </a>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="nav-dropdown">
+                    <button class="nav-link dropdown-btn"><i class="fas fa-image"></i> Image Tools <i
+                            class="fas fa-chevron-down fa-xs"></i></button>
+                    <div class="dropdown-content">
+                        <th:block th:each="tool : ${toolsByCategory['Image']}">
+                            <a th:href="@{'/tool/' + ${tool.id}}" class="dropdown-item">
+                                <span th:text="${tool.icon}"></span> <span th:text="${tool.name}"></span>
+                            </a>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="nav-dropdown">
+                    <button class="nav-link dropdown-btn"><i class="fas fa-table"></i> Spreadsheet <i
+                            class="fas fa-chevron-down fa-xs"></i></button>
+                    <div class="dropdown-content">
+                        <th:block th:each="tool : ${toolsByCategory['Spreadsheet']}">
+                            <a th:href="@{'/tool/' + ${tool.id}}" class="dropdown-item">
+                                <span th:text="${tool.icon}"></span> <span th:text="${tool.name}"></span>
+                            </a>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="nav-dropdown">
+                    <button class="nav-link dropdown-btn"><i class="fas fa-file-alt"></i> Documents <i
+                            class="fas fa-chevron-down fa-xs"></i></button>
+                    <div class="dropdown-content">
+                        <th:block th:each="tool : ${toolsByCategory['Document']}">
+                            <a th:href="@{'/tool/' + ${tool.id}}" class="dropdown-item">
+                                <span th:text="${tool.icon}"></span> <span th:text="${tool.name}"></span>
+                            </a>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="nav-dropdown">
+                    <button class="nav-link dropdown-btn"><i class="fas fa-music"></i> Media <i
+                            class="fas fa-chevron-down fa-xs"></i></button>
+                    <div class="dropdown-content">
+                        <th:block th:each="tool : ${toolsByCategory['Media']}">
+                            <a th:href="@{'/tool/' + ${tool.id}}" class="dropdown-item">
+                                <span th:text="${tool.icon}"></span> <span th:text="${tool.name}"></span>
+                            </a>
+                        </th:block>
+                    </div>
+                </div>
+                <a href="/stats" class="nav-link"><i class="fas fa-chart-pie"></i> Stats</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-bg">
+            <div class="blob blob1"></div>
+            <div class="blob blob2"></div>
+            <div class="blob blob3"></div>
+            <div class="particles" id="particles"></div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-badge animate-fade-in">
+                <i class="fas fa-star"></i> 35+ Free Conversion Tools
+            </div>
+            <h1 class="hero-title animate-slide-up">
+                Convert <span class="gradient-text">Any File</span><br>In Seconds
+            </h1>
+            <p class="hero-subtitle animate-slide-up delay-1">
+                PDF, Word, Excel, Images, Audio, Video and more. Fast, secure, and completely free.
+            </p>
+            <div class="hero-search animate-slide-up delay-2">
+                <i class="fas fa-search"></i>
+                <input type="text" id="toolSearch" placeholder="Search for a tool... e.g. PDF to Word"
+                    autocomplete="off">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <div class="hero-stats animate-slide-up delay-3">
+                <div class="stat-item"><span class="stat-number" th:text="${stats.totalConversionsValue}">0</span><span
+                        class="stat-label">Conversions</span></div>
+                <div class="stat-divider"></div>
+                <div class="stat-item"><span class="stat-number">35+</span><span class="stat-label">Tools</span></div>
+                <div class="stat-divider"></div>
+                <div class="stat-item"><span class="stat-number">100%</span><span class="stat-label">Free</span></div>
+            </div>
+        </div>
+        <div class="hero-scroll">
+            <div class="scroll-indicator"><i class="fas fa-chevron-down"></i></div>
+        </div>
+    </section>
+
+    <!-- POPULAR TOOLS -->
+    <section class="section" id="popular">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">🔥 Most Used</span>
+                <h2 class="section-title">Popular Tools</h2>
+                <p class="section-subtitle">The tools our users love the most</p>
+            </div>
+            <div class="tools-grid popular-grid">
+                <th:block th:each="tool : ${popularTools}">
+                    <a th:href="@{'/tool/' + ${tool.id}}" class="tool-card popular-card"
+                        th:attr="data-category=${tool.category}">
+                        <div class="tool-card-icon"
+                            th:style="'background: ' + ${tool.color} + '20; color:' + ${tool.color}">
+                            <span th:text="${tool.icon}"></span>
+                        </div>
+                        <div class="tool-card-info">
+                            <h3 th:text="${tool.name}">Tool Name</h3>
+                            <p th:text="${tool.description}">Description</p>
+                        </div>
+                        <div class="tool-card-arrow"><i class="fas fa-arrow-right"></i></div>
+                        <div class="tool-card-badge" th:style="'background:' + ${tool.color}"
+                            th:text="${tool.category}">PDF</div>
+                    </a>
+                </th:block>
+            </div>
+        </div>
+    </section>
+
+    <!-- ALL TOOLS BY CATEGORY -->
+    <section class="section bg-alt" id="all-tools">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">🛠️ All Tools</span>
+                <h2 class="section-title">Complete Toolkit</h2>
+                <p class="section-subtitle">Everything you need for file conversion</p>
+            </div>
+
+            <!-- Category Tabs -->
+            <div class="category-tabs" id="categoryTabs">
+                <button class="cat-tab active" data-cat="all">All <span class="cat-count"
+                        th:text="${#lists.size(tools)}">0</span></button>
+                <th:block th:each="entry : ${toolsByCategory}">
+                    <button class="cat-tab" th:attr="data-cat=${entry.key}"
+                        th:text="${entry.key + ' (' + #lists.size(entry.value) + ')'}">Category</button>
+                </th:block>
+            </div>
+
+            <div class="tools-masonry" id="toolsGrid">
+                <th:block th:each="tool : ${tools}">
+                    <a th:href="@{'/tool/' + ${tool.id}}" class="tool-mini-card"
+                        th:attr="data-category=${tool.category}">
+                        <span class="tool-mini-icon" th:text="${tool.icon}"></span>
+                        <div class="tool-mini-info">
+                            <span class="tool-mini-name" th:text="${tool.name}">Name</span>
+                            <span class="tool-mini-desc" th:text="${tool.description}">Desc</span>
+                        </div>
+                        <span class="tool-mini-arrow"><i class="fas fa-chevron-right"></i></span>
+                    </a>
+                </th:block>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="section" id="features">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">⚡ Why Us</span>
+                <h2 class="section-title">Why FileConverter Pro?</h2>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon" style="background:#6c63ff20; color:#6c63ff"><i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Lightning Fast</h3>
+                    <p>Powered by Java 21 virtual threads for ultra-fast conversions, even for large files.</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon" style="background:#00d2ff20; color:#00d2ff"><i
+                            class="fas fa-shield-alt"></i></div>
+                    <h3>100% Secure</h3>
+                    <p>Files are processed locally on the server and automatically deleted after conversion.</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon" style="background:#f39c1220; color:#f39c12"><i
+                            class="fas fa-infinity"></i></div>
+                    <h3>No Limits</h3>
+                    <p>Convert as many files as you want, up to 500MB each, completely free.</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon" style="background:#2ecc7120; color:#2ecc71"><i
+                            class="fas fa-mobile-alt"></i></div>
+                    <h3>Mobile Friendly</h3>
+                    <p>Works perfectly on all devices — desktop, tablet, and smartphone.</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon" style="background:#e74c3c20; color:#e74c3c"><i class="fas fa-code"></i>
+                    </div>
+                    <h3>35+ Tools</h3>
+                    <p>From PDF to image conversion, everything is covered in one place.</p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon" style="background:#9b59b620; color:#9b59b6"><i
+                            class="fas fa-cloud-download-alt"></i></div>
+                    <h3>Instant Download</h3>
+                    <p>Your converted file is ready to download immediately after processing.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="/" class="nav-logo">
+                        <div class="logo-icon small"><i class="fas fa-bolt"></i></div>
+                        <span class="logo-text">FileConverter<span class="logo-pro">Pro</span></span>
+                    </a>
+                    <p>The most comprehensive file conversion toolkit, built with Java 21 & Spring Boot.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>PDF Tools</h4>
+                    <th:block th:each="tool : ${toolsByCategory['PDF']}">
+                        <a th:href="@{'/tool/' + ${tool.id}}" th:text="${tool.name}">Tool</a>
+                    </th:block>
+                </div>
+                <div class="footer-links">
+                    <h4>Image Tools</h4>
+                    <th:block th:each="tool : ${toolsByCategory['Image']}">
+                        <a th:href="@{'/tool/' + ${tool.id}}" th:text="${tool.name}">Tool</a>
+                    </th:block>
+                </div>
+                <div class="footer-links">
+                    <h4>More Tools</h4>
+                    <th:block th:each="tool : ${toolsByCategory['Spreadsheet']}">
+                        <a th:href="@{'/tool/' + ${tool.id}}" th:text="${tool.name}">Tool</a>
+                    </th:block>
+                    <th:block th:each="tool : ${toolsByCategory['Media']}">
+                        <a th:href="@{'/tool/' + ${tool.id}}" th:text="${tool.name}">Tool</a>
+                    </th:block>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2025 FileConverter Pro · Built with ❤️ using Java 21 & Spring Boot</p>
+                <a href="/stats" class="footer-stats-link"><i class="fas fa-chart-pie"></i> View Stats</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <script th:src="@{/js/main.js}"></script>
+    <script th:inline="javascript">
+        // Build tool search data manually to avoid serialization issues
+        const allTools = [
+            /*[# th:each="t,iter : ${tools}"]*/
+            {
+                "id": /*[[${t.id}]]*/ "",
+                "name": /*[[${t.name}]]*/ "",
+                "description": /*[[${t.description}]]*/ "",
+                "icon": /*[[${t.icon}]]*/ "",
+                "category": /*[[${t.category}]]*/ "",
+                "fromFormat": /*[[${t.fromFormat}]]*/ "",
+                "toFormat": /*[[${t.toFormat}]]*/ ""
+            } /*[# th:if="${!iter.last}"]*/,/*[/]*/
+            /*[/]*/
+        ];
+        initToolSearch(allTools);
+        initCategoryTabs();
+        initParticles();
+        initScrollAnimations();
+    </script>
+</body>
+
+</html>

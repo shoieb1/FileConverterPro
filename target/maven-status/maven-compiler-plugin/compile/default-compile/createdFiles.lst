@@ -1,0 +1,14 @@
+com\fileconverter\config\WebConfig.class
+com\fileconverter\controller\HomeController.class
+com\fileconverter\controller\ConversionController.class
+com\fileconverter\FileConverterApplication.class
+com\fileconverter\model\ToolInfo.class
+com\fileconverter\service\ToolRegistryService.class
+com\fileconverter\service\ConversionService$1.class
+com\fileconverter\service\StatsService.class
+com\fileconverter\exception\GlobalErrorController.class
+com\fileconverter\service\ConversionService.class
+com\fileconverter\model\ConversionStats.class
+com\fileconverter\model\ToolInfo$ToolInfoBuilder.class
+com\fileconverter\model\ConversionResult$ConversionResultBuilder.class
+com\fileconverter\model\ConversionResult.class

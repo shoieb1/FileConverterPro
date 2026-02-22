@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${statusCode} + ' Error – FileConverter Pro'">Error – FileConverter Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="error-page">
+
+<nav class="navbar" id="navbar">
+    <div class="nav-container">
+        <a href="/" class="nav-logo">
+            <div class="logo-icon"><i class="fas fa-bolt"></i></div>
+            <span class="logo-text">FileConverter<span class="logo-pro">Pro</span></span>
+        </a>
+        <div class="nav-menu">
+            <a href="/" class="nav-link"><i class="fas fa-home"></i> Home</a>
+        </div>
+    </div>
+</nav>
+
+<section class="error-section">
+    <div class="error-bg">
+        <div class="blob blob1" style="opacity:0.3"></div>
+        <div class="blob blob2" style="opacity:0.2"></div>
+    </div>
+    <div class="container-sm">
+        <div class="error-card">
+            <!-- Animated error character -->
+            <div class="error-animation">
+                <div class="error-robot">
+                    <div class="robot-head">
+                        <div class="robot-eyes">
+                            <div class="robot-eye" id="eye1">
+                                <div class="pupil"></div>
+                            </div>
+                            <div class="robot-eye" id="eye2">
+                                <div class="pupil"></div>
+                            </div>
+                        </div>
+                        <div class="robot-mouth"></div>
+                    </div>
+                    <div class="robot-body">
+                        <div class="robot-arm left"></div>
+                        <div class="robot-core">
+                            <span class="error-code-display" th:text="${statusCode}">404</span>
+                        </div>
+                        <div class="robot-arm right"></div>
+                    </div>
+                    <div class="robot-legs">
+                        <div class="robot-leg"></div>
+                        <div class="robot-leg"></div>
+                    </div>
+                </div>
+            </div>
+
+            <h1 class="error-title">
+                <th:block th:if="${statusCode == 404}">Page Not Found</th:block>
+                <th:block th:if="${statusCode == 500}">Server Error</th:block>
+                <th:block th:if="${statusCode == 413}">File Too Large</th:block>
+                <th:block th:if="${statusCode != 404 and statusCode != 500 and statusCode != 413}">Something Went Wrong</th:block>
+            </h1>
+            <p class="error-subtitle" th:text="${message}">An unexpected error occurred.</p>
+
+            <div class="error-tips" th:if="${statusCode == 413}">
+                <i class="fas fa-info-circle"></i>
+                Maximum allowed file size is 500 MB. Please compress your file and try again.
+            </div>
+
+            <div class="error-actions">
+                <a href="/" class="btn-convert" style="text-decoration:none; display:inline-flex;">
+                    <i class="fas fa-home"></i> Back to Home
+                </a>
+                <button onclick="history.back()" class="btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Go Back
+                </button>
+            </div>
+
+            <div class="error-quick-links">
+                <h4>Quick Links</h4>
+                <div class="quick-links-grid">
+                    <a href="/tool/pdf-to-word">📄 PDF → Word</a>
+                    <a href="/tool/jpg-to-png">🎨 JPG → PNG</a>
+                    <a href="/tool/csv-to-excel">📊 CSV → Excel</a>
+                    <a href="/tool/image-resize">↔️ Resize Image</a>
+                    <a href="/tool/pdf-merge">🔗 Merge PDFs</a>
+                    <a href="/stats">📈 Statistics</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script th:src="@{/js/main.js}"></script>
+<script>initErrorPage();</script>
+</body>
+</html>
